@@ -49,13 +49,7 @@ for k, v in pairs(Icons) do
     Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
 end
 
-local Mercury;
-
-if isfile("mercury_fork.lua") then
-    Mercury = loadstring(readfile("mercury_fork.lua"))()
-else
-    Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
-end
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
 
 if not isfile(Directory .. "/settings.json") then
     writefile(Directory .. "/settings.json", HttpService:JSONEncode({
@@ -85,13 +79,6 @@ if Keybind[1] == "Enum" then
     Settings.ToggleKeybind = Enum[Keybind[2]][Keybind[3]]
 end
 
-if Mercury.Fork == "3xjn" then 
-    Mercury.SettingsChanged:Connect(function(key, value)
-        Settings[key] = tostring(value)
-        writefile(Directory .. "/settings.json", HttpService:JSONEncode(Settings))
-    end)
-end
-
 local UI = Mercury:Create({
     Name = "Utilities",
     Size = UDim2.fromOffset(600, 400),
@@ -101,7 +88,6 @@ local UI = Mercury:Create({
     Icon = Icons.hammer,
     HideKeybind = Settings.ToggleKeybind
 })
-
 
 local MarketplaceService = game:GetService("MarketplaceService")
 local CoreGui = game:GetService("CoreGui")

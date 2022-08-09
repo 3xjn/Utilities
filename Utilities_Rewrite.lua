@@ -9,6 +9,8 @@ end
 
 getgenv().utilities = true
 
+local HttpService = game:GetService("HttpService")
+
 if not isfolder("assets") then
     makefolder("assets")
 end
@@ -32,6 +34,7 @@ local Icons = {
     emotes = github .. "emotes.png",
     chat = github .. "chat.png",
     speed = github .. "speed.png",
+    sleep = github .. "sleep.png",
 }
 
 -- Convert online assets to useable assets
@@ -54,6 +57,34 @@ else
     Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
 end
 
+if not isfile(Directory .. "/settings.json") then
+    writefile(Directory .. "/settings.json", HttpService:JSONEncode({
+        Animation = {},
+        Emotes = {},
+        ACL = {
+            Enabled = true,
+            allowEmotes = true,
+        },
+        AntiFling = {
+            Enabled = false,
+            ignoreFriends = true
+        },
+        AntiAfk = {
+            Enabled = false
+        },
+        ToggleKeybind = "Enum.KeyCode.RightAlt"
+    }))
+end
+
+local Settings = HttpService:JSONDecode(readfile(Directory .. "/settings.json"))
+
+-- Parse Toggle Keybind
+local Keybind = Settings.ToggleKeybind:split(".")
+
+if Keybind[1] == "Enum" then
+    Settings.ToggleKeybind = Enum[Keybind[2]][Keybind[3]]
+end
+
 local UI = Mercury:Create({
     Name = "Utilities",
     Size = UDim2.fromOffset(600, 400),
@@ -61,23 +92,10 @@ local UI = Mercury:Create({
     Link = "https://github.com/3xjn/Utilities",
     Url = "utilities",
     Icon = Icons.hammer,
-    HideKeybind = Enum.KeyCode.RightAlt
+    HideKeybind = Settings.ToggleKeybind
 })
 
-local Settings = {
-    Animation = {},
-    Emotes = {},
-    ACL = {
-        Enabled = true,
-        allowEmotes = true,
-    },
-    AntiFling = {
-        Enabled = false,
-        ignoreFriends = true
-    }
-}
 
-local HttpService = game:GetService("HttpService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -236,10 +254,16 @@ getgenv().MessageEvent = Instance.new("BindableEvent")
 local OldFunctionHook;
 local PostMessageHook = function(self, msg)
     local aclSettings = Settings.ACL
-    if aclSettings.Enabled and not checkcaller() and self == PostMessage and (not aclSettings.allowEmotes and msg:sub(1, 3) == "/e ") then
+    if aclSettings.Enabled and not checkcaller() and self == PostMessage then
+        if aclSettings.allowEmotes and msg:sub(1, 3) == "/e " then
+            return OldFunctionHook(self, msg)
+        end
+        
         return print("[ACL] " .. msg)
     end
 
+    -- -- print aclSettings.Enabled and not checkcaller() and self == PostMessage and (not aclSettings.allowEmotes and msg:sub(1, 3) == "/e ")
+    -- print(tostring(aclSettings.Enabled) .. " " .. tostring(not checkcaller()) .. " " .. tostring(self == PostMessage) .. " " .. tostring(not aclSettings.allowEmotes) .. " " .. tostring(msg:sub(1, 3) == "/e "))
     return OldFunctionHook(self, msg)
 end
 
@@ -310,3 +334,27 @@ Players.PlayerAdded:Connect(OnPlayerAdded)
 for i,v in pairs(Players:GetPlayers()) do
     OnPlayerAdded(v)
 end
+
+local AntiAfk = UI:Tab({
+    Name = "AntiAfk",
+    Icon = Icons.sleep
+})
+
+AntiAfk:Toggle({
+    Name = "AntiAfk",
+    StartingState = Settings.AntiAfk.Enabled,
+    Description = "Disable AFK kick",
+    Callback = function(state)
+        Settings.AntiAfk.Enabled = state
+
+        if state then
+            for _, v in pairs(getconnections(LocalPlayer.Idled)) do
+                v:Disable()
+            end
+        else
+            for _, v in pairs(getconnections(LocalPlayer.Idled)) do
+                v:Enable()
+            end
+        end
+    end
+})

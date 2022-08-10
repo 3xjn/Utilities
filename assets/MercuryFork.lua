@@ -364,20 +364,29 @@ function Library:object(class, properties)
 	})
 end
 
+local tweening = false
 function Library:show(state)
+    if tweening then return end
 	self.Toggled = state
 	self.mainFrame.ClipsDescendants = true
+
 	if state then
+        tweening = true
 		self.mainFrame:tween({Size = self.mainFrame.oldSize, Length = 0.25}, function()
 			rawset(self.mainFrame, "oldSize", (state and self.mainFrame.oldSize) or self.mainFrame.Size)
 			self.mainFrame.ClipsDescendants = false
 		end)
 		wait(0.15)
 		self.mainFrame:fade(not state, self.mainFrame.BackgroundColor3, 0.15)
+        wait(0.25)
+        tweening = false
 	else		
+        tweening = true
 		self.mainFrame:fade(not state, self.mainFrame.BackgroundColor3, 0.15)
 		wait(0.1)
 		self.mainFrame:tween{Size = UDim2.new(), Length = 0.25}
+        task.wait(0.3)
+        tweening = false
 	end
 end
 
@@ -936,6 +945,8 @@ function Library:create(options)
             end)
         end
     }
+
+    options.settingsTab = settingsTab
 
 	local creditsTab = Library.tab(mt, {
 		Name = "Credits",

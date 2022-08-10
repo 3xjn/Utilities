@@ -35,6 +35,7 @@ local Icons = {
     chat = github .. "chat.png",
     speed = github .. "speed.png",
     sleep = github .. "sleep.png",
+    block = github .. "block.png",
 }
 
 -- Convert online assets to useable assets
@@ -51,26 +52,39 @@ end
 
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
 
+local templateSettings = {
+    Animation = {},
+    Emotes = {},
+    ACL = {
+        Enabled = true,
+        allowEmotes = true,
+    },
+    AntiFling = {
+        Enabled = false,
+        ignoreFriends = true
+    },
+    AntiAfk = {
+        Enabled = false
+    },
+    AntiKill = {
+        AntiVoid = false,
+        AntiTKill = false
+    },
+    ToggleKeybind = "Enum.KeyCode.RightAlt"
+}
+
 if not isfile(Directory .. "/settings.json") then
-    writefile(Directory .. "/settings.json", HttpService:JSONEncode({
-        Animation = {},
-        Emotes = {},
-        ACL = {
-            Enabled = true,
-            allowEmotes = true,
-        },
-        AntiFling = {
-            Enabled = false,
-            ignoreFriends = true
-        },
-        AntiAfk = {
-            Enabled = false
-        },
-        ToggleKeybind = "Enum.KeyCode.RightAlt"
-    }))
+    writefile(Directory .. "/settings.json", HttpService:JSONEncode(templateSettings))
 end
 
 local Settings = HttpService:JSONDecode(readfile(Directory .. "/settings.json"))
+
+-- check if there are any new settings that need to be added to the saved settings
+for k, v in pairs(templateSettings) do
+    if not Settings[k] then
+        Settings[k] = v
+    end
+end
 
 -- Parse Toggle Keybind
 local Keybind = Settings.ToggleKeybind:split(".")
@@ -190,7 +204,7 @@ end
 for i=1, 8 do
     Emotes:Textbox({
         Name = "Emote" .. i,
-        StartingText = "Select...",
+        Placeholder = Settings.Emotes[i] or "Select...",
         Callback = function(text)
             local isDigit = tonumber(text)
 
@@ -349,5 +363,75 @@ AntiAfk:Toggle({
                 v:Enable()
             end
         end
+    end
+})
+
+local AntiKill = UI:Tab({
+    Name = "AntiKill",
+    Icon = Icons.block
+})
+
+AntiKill:Toggle({
+    Name = "Anti Void",
+    StartingState = Settings.AntiKill.AntiVoid,
+    Description = "Stop people from void killing you",
+    Callback = function(state)
+        Settings.AntiKill.AntiVoid = state
+    end
+})
+
+local Tools = {}
+
+local Players = game:GetService("Players")
+function ToolCheck(Tool: Tool)
+    if not Tool:IsA("Tool") then return end
+
+    -- check if tool is descendant of player backpack or player's character
+    local owner;
+
+    for _, v in pairs(Players:GetPlayers()) do
+        if Tool:IsDescendantOf(v.Backpack) or Tool:IsDescendantOf(v.Character) then
+            owner = v
+            break
+        end
+    end
+
+    if not owner then return end
+
+    Tools[Tool] = {
+        owner = owner,
+    }
+end
+
+for _, v in pairs(game:GetDescendants()) do
+    ToolCheck(v)
+end 
+
+game.DescendantAdded:Connect(function(descendant)
+    ToolCheck(descendant)
+end)
+
+local LocalPlayer = Players.LocalPlayer
+
+function antivoid(character)
+    character.ChildAdded:Connect(function(child)
+        if not Settings.AntiKill.AntiVoid then return end
+        task.wait()
+        -- make sure you're not the owner of the tool
+        if Tools[child] and Tools[child].owner ~= LocalPlayer then
+            child:Destroy()
+        end
+    end)
+end
+
+antivoid(LocalPlayer.Character)
+LocalPlayer.CharacterAdded:Connect(antivoid)
+
+AntiKill:Button({
+    Name = "Anti Tool Kill",
+    Description = "Stop people from killing you with tools",
+    Callback = function()
+        LocalPlayer.Character.Humanoid.Sit = true
+        LocalPlayer.Character.Humanoid:SetStateEnabled("Seated", false)
     end
 })

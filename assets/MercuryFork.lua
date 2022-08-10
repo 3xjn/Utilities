@@ -828,7 +828,7 @@ function Library:create(options)
 		Theme = {TextColor3 = {"WeakText", -20}},
 		TextScaled = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		Text = tostring(os.date("%X")):sub(1, os.date("%X"):len()-3)
+		Text = tostring(os.date("%I:%M %p"))--tostring(os.date("%X")):sub(1, os.date("%X"):len()-3)
 	})
 
 	do
@@ -838,8 +838,9 @@ function Library:create(options)
 			counter += step  
 			if counter >= desiredInterval then
 				counter -= desiredInterval
-				local date = tostring(os.date("%X"))
-				timeDisplay.Text = date:sub(1, date:len()-3)
+				--local date = tostring(os.date("%X"))
+                --timeDisplay.Text = date:sub(1, date:len()-3)
+                timeDisplay.Text = tostring(os.date("%I:%M %p"))
 			end
 		end)
 	end

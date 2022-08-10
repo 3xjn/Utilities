@@ -598,12 +598,14 @@ function Library:create(options)
 	end)
 	
 	local function closeUI()
-		core.ClipsDescendants = true
-		core:fade(true)
-		wait(0.1)
-		core:tween({Size = UDim2.new()}, function()
-			gui.AbsoluteObject:Destroy()
-		end)
+		-- core.ClipsDescendants = true
+		-- core:fade(true)
+		-- wait(0.1)
+		-- core:tween({Size = UDim2.new()}, function()
+		-- 	gui.AbsoluteObject:Destroy()
+		-- end)
+
+        Library:show(false)
 	end
 	
 	if getgenv then

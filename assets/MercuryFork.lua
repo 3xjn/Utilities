@@ -598,13 +598,6 @@ function Library:create(options)
 	end)
 	
 	local function closeUI()
-		-- core.ClipsDescendants = true
-		-- core:fade(true)
-		-- wait(0.1)
-		-- core:tween({Size = UDim2.new()}, function()
-		-- 	gui.AbsoluteObject:Destroy()
-		-- end)
-
         Library:show(false)
 	end
 	
@@ -930,6 +923,19 @@ function Library:create(options)
 			Library.DragSpeed = (20 - value)/100
 		end,
 	}
+
+    settingsTab:button{
+        Name = "Destroy UI",
+        Description = "Removes the UI from the screen.",
+        Callback = function()
+            core.ClipsDescendants = true
+            core:fade(true)
+            wait(0.1)
+            core:tween({Size = UDim2.new()}, function()
+            	gui.AbsoluteObject:Destroy()
+            end)
+        end
+    }
 
 	local creditsTab = Library.tab(mt, {
 		Name = "Credits",

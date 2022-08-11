@@ -186,15 +186,6 @@ function aUpdate(firstLoad)
             local split = path:split(".")
 
             Animate[split[1]][split[2]].AnimationId = "rbxassetid://" .. id
-
-            if not firstLoad then
-                UI:Notification({
-                    Title = "Animation Updated",
-                    Text = item .. " - " .. path,
-                    Duration = 3,
-                    Icon = Icons.animation
-                })
-            end
         end
     end
 
@@ -242,6 +233,13 @@ for k, v in pairs(paths) do
         Callback = function(item)
             selectedAnimations[v] = item
             aUpdate()
+
+            UI:Notification({
+                Title = "Animation Updated",
+                Text = ("%s set to %s"):format(name, item),
+                Duration = 3,
+                Icon = Icons.animation
+            })  
         end
     })
 end

@@ -1025,7 +1025,7 @@ function Library:notification(options)
 		ImageTransparency = 1,
 		Position = UDim2.fromOffset(1, 1),
 		Size = UDim2.fromOffset(18, 18),
-		Image = "rbxassetid://8628681683",
+		Image = options.Icon or "rbxassetid://8628681683",
 		Theme = {ImageColor3 = "Tertiary"}
 	})
 

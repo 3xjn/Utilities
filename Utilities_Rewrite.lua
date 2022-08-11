@@ -50,7 +50,7 @@ for k, v in pairs(Icons) do
     Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
 end
 
-local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
+local Mercury = loadstring(readfile("MercuryFork.lua"))()--loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
 
 local templateSettings = {
     Animation = {},
@@ -114,65 +114,141 @@ local Animation = UI:Tab({
     Icon = Icons.animation
 })
 
--- local paths = {
---     idle = {
---         "Animation1",
---         "Animation2"
---     },
---     walk = "WalkAnim",
---     run = "RunAnim",
---     jump = "JumpAnim",
---     climb = "ClimbAnim",
---     fall = "FallAnim"
--- }
+local animations = syn.request({
+    Url = "https://raw.githubusercontent.com/3xjn/utilities/main/assets/animations.json",
+    Method = "GET"
+}).Body
 
--- local animations = syn.request({
---     Url = "https://raw.githubusercontent.com/3xjn/utilities/main/assets/animations.json",
---     Method = "GET"
--- }).Body
+animations = HttpService:JSONDecode(animations)
 
--- animations = HttpService:JSONDecode(animations)
+local animationNames = {}
 
--- local animationNames = {}
+for k, v in pairs(animations) do
+    animationNames[#animationNames + 1] = k
+end
 
--- for k, v in pairs(animations) do
---     animationNames[#animationNames + 1] = k
--- end
+table.sort(animationNames)
 
--- table.sort(animationNames)
+local paths = {
+    "idle.Animation1",
+    "idle.Animation2",
+    "walk.WalkAnim",
+    "run.RunAnim",
+    "jump.JumpAnim",
+    "climb.ClimbAnim",
+    "fall.FallAnim"
+}
 
--- local LocalPlayer = Players.LocalPlayer
--- local selectAnimations = {
--- }
+local LocalPlayer = Players.LocalPlayer
+local selectedAnimations;
 
--- for k, v in pairs(paths) do
---     local function create(name, i)
---         Animation:Dropdown({
---             Name = name:gsub("^%l", string.upper) .. i or "",
---             StartingText = "Select...",
---             Description = nil,
---             Items = animationNames,
---             Callback = function(item)
-                
---             end
---         })
---     end
+if isfile(Directory .. "/animations.json") then
+    selectedAnimations = HttpService:JSONDecode(readfile(Directory .. "/animations.json"))
+else
+    selectedAnimations = {}
+end
 
---     if type(v) == "table" then
---         for i, _ in pairs(v) do
---             create(k, i)
---         end
---     else
---         create(k)
---     end
--- end
+function aUpdate(firstLoad)
+    local Character = LocalPlayer.Character
+
+    if not Character then
+        return
+    end
+
+    local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+
+    if not Humanoid then
+        return
+    end
+
+    if Humanoid.RigType ~= Enum.HumanoidRigType.R15 then 
+        return UI:Notification({
+            Title = "Alert",
+            Text = "Your character is not using the R15 rig.",
+            Duration = 3
+        })
+    end
+
+    local Animate = Character:WaitForChild("Animate")
+
+    if not Animate then
+        return
+    end
+
+    for path, item in pairs(selectedAnimations) do
+        -- go from item name to id
+        -- get index of path in paths
+        local index = table.find(paths, path)
+        
+        if index then
+            local id = animations[item][index]
+            local split = path:split(".")
+
+            Animate[split[1]][split[2]].AnimationId = "rbxassetid://" .. id
+
+            if not firstLoad then
+                UI:Notification({
+                    Title = "Animation Updated",
+                    Text = item .. " - " .. path,
+                    Duration = 3
+                })
+            end
+        end
+    end
+
+    writefile(Directory .. "/animations.json", HttpService:JSONEncode(selectedAnimations))
+end
+
+function pluralize(number, singular, plural)
+    if number == 1 then
+        return singular
+    end
+
+    return plural
+end
+
+-- both # operator and table.getn are broken so we must use this disgusting workaround
+local count = 0
+
+for _, _ in pairs(selectedAnimations) do
+    count = count + 1
+end
+
+if count > 0 then
+    if LocalPlayer.Character then
+        aUpdate(true)
+        UI:Notification({
+            Title = "Loaded",
+            Text = ("%u %s loaded"):format(count, pluralize(count, "animation", "animations")),
+            Duration = 3
+        })
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(aUpdate)
+
+for k, v in pairs(paths) do
+    local split = v:split(".")
+
+    local name = split[2]:gsub("^%l", string.upper) .. (i or "")
+    Animation:Dropdown({
+        Name = name,
+        StartingText = selectedAnimations[v] or "Select...",
+        Description = nil,
+        Items = animationNames,
+        Callback = function(item)
+            selectedAnimations[v] = item
+            aUpdate()
+        end
+    })
+end
 
 local Emotes = UI:Tab({
     Name = "Emotes",
     Icon = Icons.emotes
 })
 
-function update()
+function eUpdate()
     writefile(Directory .. "/emotes.json", HttpService:JSONEncode(Settings.Emotes))
     
     local Character = LocalPlayer.Character
@@ -198,7 +274,13 @@ end
 Settings.Emotes = HttpService:JSONDecode(readfile(Directory .. "/emotes.json")) or {}
 
 if #Settings.Emotes > 0 then
-    update()
+    eUpdate()
+
+    UI:Notification({
+        Title = "Loaded",
+        Text = ("%u %s loaded"):format(#Settings.Emotes, pluralize(#Settings.Emotes, "emote", "emotes")),
+        Duration = 3
+    })
 end
 
 for i=1, 8 do
@@ -211,20 +293,20 @@ for i=1, 8 do
             if isDigit then
                 Settings.Emotes[i] = isDigit
                 print(isDigit)
-                update()
+                eUpdate()
             end
 
-            -- Mercury:Notification({
-            --     Title = "Alert",
-            --     Text = "Successfully set emote " .. i .. " to " .. text,
-            --     Duration = 3
-            -- })
+            UI:Notification({
+                Title = "Updated",
+                Text = "Successfully set emote " .. i .. " to " .. text,
+                Duration = 3
+            })
         end
     })
 end
 
-update()
-LocalPlayer.CharacterAdded:Connect(update)
+eUpdate()
+LocalPlayer.CharacterAdded:Connect(eUpdate)
 
 local ACL = UI:Tab({
     Name = "ACL",
@@ -238,11 +320,11 @@ ACL:Toggle({
     Callback = function(state)
         Settings.ACL.Enabled = state
 
-        -- Mercury:Notification({
-        --     Title = "Alert",
-        --     Text = state and "ACL has been enabled" or "ACL has been disabled",
-        --     Duration = 3
-        -- })
+        UI:Notification({
+            Title = "Settings",
+            Text = state and "ACL has been enabled" or "ACL has been disabled",
+            Duration = 3
+        })
     end
 })
 
@@ -252,6 +334,12 @@ ACL:Toggle({
     Description = "Allow messages starting with \"/e \" to be sent",
     Callback = function(state)
         Settings.ACL.allowEmotes = state
+
+        UI:Notification({
+            Title = "Settings",
+            Text = "Allow emotes has been " .. (state and "enabled" or "disabled"),
+            Duration = 3
+        })
     end
 })
 
@@ -269,8 +357,6 @@ local PostMessageHook = function(self, msg)
         return print("[ACL] " .. msg)
     end
 
-    -- -- print aclSettings.Enabled and not checkcaller() and self == PostMessage and (not aclSettings.allowEmotes and msg:sub(1, 3) == "/e ")
-    -- print(tostring(aclSettings.Enabled) .. " " .. tostring(not checkcaller()) .. " " .. tostring(self == PostMessage) .. " " .. tostring(not aclSettings.allowEmotes) .. " " .. tostring(msg:sub(1, 3) == "/e "))
     return OldFunctionHook(self, msg)
 end
 
@@ -300,6 +386,12 @@ AntiFling:Toggle({
     Callback = function(state)
         Settings.AntiFling.Enabled = state
         PhysicsService:CollisionGroupSetCollidable("Players", "Players", not state)
+    
+        UI:Notification({
+            Title = "Settings",
+            Text = state and "AntiFling has been enabled" or "AntiFling has been disabled",
+            Duration = 3
+        })
     end
 })
 
@@ -310,6 +402,12 @@ AntiFling:Toggle({
     Callback = function(state)
         Settings.AntiFling.ignoreFriends = state
         PhysicsService:CollisionGroupSetCollidable("Players", "Friends", state)
+
+        UI:Notification({
+            Title = "Settings",
+            Text = "Ignore friends has been " .. (state and "enabled" or "disabled"),
+            Duration = 3
+        })
     end
 })
 
@@ -363,6 +461,12 @@ AntiAfk:Toggle({
                 v:Enable()
             end
         end
+
+        UI:Notification({
+            Title = "Settings",
+            Text = state and "AntiAfk has been enabled" or "AntiAfk has been disabled",
+            Duration = 3
+        })
     end
 })
 
@@ -377,6 +481,12 @@ AntiKill:Toggle({
     Description = "Stop people from void killing you",
     Callback = function(state)
         Settings.AntiKill.AntiVoid = state
+
+        UI:Notification({
+            Title = "Settings",
+            Text = state and "AntiVoid has been enabled" or "AntiVoid has been disabled",
+            Duration = 3
+        })
     end
 })
 

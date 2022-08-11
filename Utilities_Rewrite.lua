@@ -50,7 +50,7 @@ for k, v in pairs(Icons) do
     Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
 end
 
-local Mercury = loadstring(readfile("MercuryFork.lua"))()--loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/Utilities/main/assets/MercuryFork.lua"))()
 
 local templateSettings = {
     Animation = {},
@@ -165,7 +165,8 @@ function aUpdate(firstLoad)
         return UI:Notification({
             Title = "Alert",
             Text = "Your character is not using the R15 rig.",
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.animation
         })
     end
 
@@ -190,7 +191,8 @@ function aUpdate(firstLoad)
                 UI:Notification({
                     Title = "Animation Updated",
                     Text = item .. " - " .. path,
-                    Duration = 3
+                    Duration = 3,
+                    Icon = Icons.animation
                 })
             end
         end
@@ -220,7 +222,8 @@ if count > 0 then
         UI:Notification({
             Title = "Loaded",
             Text = ("%u %s loaded"):format(count, pluralize(count, "animation", "animations")),
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.animation
         })
     end
 end
@@ -279,7 +282,8 @@ if #Settings.Emotes > 0 then
     UI:Notification({
         Title = "Loaded",
         Text = ("%u %s loaded"):format(#Settings.Emotes, pluralize(#Settings.Emotes, "emote", "emotes")),
-        Duration = 3
+        Duration = 3,
+        Icon = Icons.emotes
     })
 end
 
@@ -299,7 +303,8 @@ for i=1, 8 do
             UI:Notification({
                 Title = "Updated",
                 Text = "Successfully set emote " .. i .. " to " .. text,
-                Duration = 3
+                Duration = 3,
+                Icon = Icons.emotes
             })
         end
     })
@@ -323,7 +328,8 @@ ACL:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = state and "ACL has been enabled" or "ACL has been disabled",
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.chat
         })
     end
 })
@@ -338,7 +344,8 @@ ACL:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = "Allow emotes has been " .. (state and "enabled" or "disabled"),
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.chat
         })
     end
 })
@@ -390,7 +397,8 @@ AntiFling:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = state and "AntiFling has been enabled" or "AntiFling has been disabled",
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.speed
         })
     end
 })
@@ -406,7 +414,8 @@ AntiFling:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = "Ignore friends has been " .. (state and "enabled" or "disabled"),
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.speed
         })
     end
 })
@@ -465,7 +474,8 @@ AntiAfk:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = state and "AntiAfk has been enabled" or "AntiAfk has been disabled",
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.sleep
         })
     end
 })
@@ -485,7 +495,8 @@ AntiKill:Toggle({
         UI:Notification({
             Title = "Settings",
             Text = state and "AntiVoid has been enabled" or "AntiVoid has been disabled",
-            Duration = 3
+            Duration = 3,
+            Icon = Icons.block
         })
     end
 })

@@ -5,7 +5,7 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local AntiKill = UI:Tab({
-    Name = "Anti Kill",
+    Name = "AntiKill",
     Icon = Icons.block
 })
 

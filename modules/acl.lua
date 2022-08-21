@@ -6,7 +6,7 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local ACL = UI:Tab({
-    Name = "Anti Chat Logger",
+    Name = "ACL",
     Icon = Icons.chat
 })
 

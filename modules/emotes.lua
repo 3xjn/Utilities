@@ -60,22 +60,16 @@ for i=1, 8 do
 
             if isDigit then
                 Settings.Emotes[i] = isDigit
+                print(isDigit)
                 update()
-
-                UI:Notification({
-                    Title = "Updated",
-                    Text = "Successfully set emote " .. i .. " to " .. text,
-                    Duration = 3,
-                    Icon = Icons.emotes
-                })
-            else
-                UI:Notification({
-                    Title = "Error",
-                    Text = "Invalid emote ID",
-                    Duration = 3,
-                    Icon = Icons.emotes
-                })
             end
+
+            UI:Notification({
+                Title = "Updated",
+                Text = "Successfully set emote " .. i .. " to " .. text,
+                Duration = 3,
+                Icon = Icons.emotes
+            })
         end
     })
 end

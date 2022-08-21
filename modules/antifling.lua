@@ -6,7 +6,7 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local AntiFling = UI:Tab({
-    Name = "Anti Fling",
+    Name = "AntiFling",
     Icon = Icons.speed
 })
 
@@ -21,7 +21,7 @@ pcall(function()
 end)
 
 AntiFling:Toggle({
-    Name = "Anti Fling",
+    Name = "AntiFling",
     StartingState = Settings.AntiFling.Enabled,
     Description = "Disable collisions with other players",
     Callback = function(state)
@@ -30,7 +30,7 @@ AntiFling:Toggle({
     
         UI:Notification({
             Title = "Settings",
-            Text = state and "Anti Fling has been enabled" or "Anti Fling has been disabled",
+            Text = state and "AntiFling has been enabled" or "AntiFling has been disabled",
             Duration = 3,
             Icon = Icons.speed
         })

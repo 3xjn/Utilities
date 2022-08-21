@@ -3,7 +3,7 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local ChatLogger = UI:Tab({
-    Name = "Chat Logger",
+    Name = "ChatLogger",
     Icon = Icons.log
 })
 

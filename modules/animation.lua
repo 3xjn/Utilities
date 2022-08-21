@@ -46,7 +46,7 @@ else
     selectedAnimations = {}
 end
 
-local function aUpdate(firstLoad)
+function aUpdate(firstLoad)
     local Character = LocalPlayer.Character
 
     if not Character then
@@ -83,7 +83,14 @@ local function aUpdate(firstLoad)
             local id = animations[item][index]
             local split = path:split(".")
 
-            Animate[split[1]][split[2]].AnimationId = "rbxassetid://" .. id
+            --Animate[split[1]][split[2]].AnimationId = "rbxassetid://" .. id
+            local look = Animate:FindFirstChild(split[1])
+            if not look then continue end
+
+            look = look:FindFirstChild(split[2])
+            if not look then continue end
+
+            look.AnimationId = "rbxassetid://" .. id
         end
     end
 
@@ -129,7 +136,7 @@ for k, v in pairs(paths) do
                 Text = ("%s set to %s"):format(name, item),
                 Duration = 3,
                 Icon = Icons.animation
-            })  
+            })
         end
     })
 end

@@ -5,7 +5,7 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local AntiKill = UI:Tab({
-    Name = "AntiKill",
+    Name = "Anti Kill",
     Icon = Icons.block
 })
 
@@ -18,7 +18,7 @@ AntiKill:Toggle({
 
         UI:Notification({
             Title = "Settings",
-            Text = state and "AntiVoid has been enabled" or "AntiVoid has been disabled",
+            Text = state and "Anti Void has been enabled" or "Anti Void has been disabled",
             Duration = 3,
             Icon = Icons.block
         })

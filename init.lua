@@ -39,8 +39,8 @@ local Icons = {
     speed = github .. "speed.png",
     sleep = github .. "sleep.png",
     block = github .. "block.png",
-    log = "https://media.discordapp.net/attachments/955989519256141894/1007184697396314203/baseline_library_books_white_48dp.png",
-    highlight = "https://cdn.discordapp.com/attachments/955989519256141894/1007187482330279966/baseline_mark_chat_unread_white_48dp.png?size=4096"
+    log = github .. "log.png",
+    userhider = github .. "userhider.png",
 }
 
 util.Icons = Icons

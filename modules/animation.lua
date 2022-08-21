@@ -46,7 +46,7 @@ else
     selectedAnimations = {}
 end
 
-function aUpdate(firstLoad)
+function update(firstLoad)
     local Character = LocalPlayer.Character
 
     if not Character then
@@ -106,7 +106,7 @@ end
 
 if count > 0 then
     if LocalPlayer.Character then
-        aUpdate(true)
+        update(true)
         UI:Notification({
             Title = "Loaded",
             Text = ("%u %s loaded"):format(count, pluralize(count, "animation", "animations")),
@@ -116,7 +116,7 @@ if count > 0 then
     end
 end
 
-LocalPlayer.CharacterAdded:Connect(aUpdate)
+LocalPlayer.CharacterAdded:Connect(update)
 
 for k, v in pairs(paths) do
     local split = v:split(".")
@@ -129,7 +129,7 @@ for k, v in pairs(paths) do
         Items = animationNames,
         Callback = function(item)
             selectedAnimations[v] = item
-            aUpdate()
+            update()
 
             UI:Notification({
                 Title = "Animation Updated",

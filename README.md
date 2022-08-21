@@ -5,7 +5,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/i
 
 # Utilities
 <i> Includes many modules to make your ROBLOX experience easier. </i>
-# Features
+
+<p align="center">
+    <img src="https://i.imgur.com/b7v2WXE.png">
+</p>
+
+## Features
 * Animations
     * Change character's animations for free
 * Emotes

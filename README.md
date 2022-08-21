@@ -5,15 +5,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/i
 
 # Utilities
 <i> Includes many modules to make your ROBLOX experience easier. </i>
-
-animation
-emotes
-acl
-antifling
-antiafk
-antikill
-chatlogger
-
 # Features
 * Animations
     * Change character's animations for free

@@ -6,12 +6,12 @@ local Icons = util.Icons
 local Settings = util.Settings
 
 local AntiAfk = UI:Tab({
-    Name = "AntiAfk",
+    Name = "Anti AFK",
     Icon = Icons.sleep
 })
 
 AntiAfk:Toggle({
-    Name = "AntiAfk",
+    Name = "Anti AFK",
     StartingState = Settings.AntiAfk.Enabled,
     Description = "Disable AFK kick",
     Callback = function(state)
@@ -29,7 +29,7 @@ AntiAfk:Toggle({
 
         UI:Notification({
             Title = "Settings",
-            Text = state and "AntiAfk has been enabled" or "AntiAfk has been disabled",
+            Text = state and "Anti AFK has been enabled" or "Anti AFK has been disabled",
             Duration = 3,
             Icon = Icons.sleep
         })

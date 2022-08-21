@@ -39,8 +39,8 @@ local Icons = {
     speed = github .. "speed.png",
     sleep = github .. "sleep.png",
     block = github .. "block.png",
-    log = "https://media.discordapp.net/attachments/955989519256141894/1007184697396314203/baseline_library_books_white_48dp.png",
-    highlight = "https://cdn.discordapp.com/attachments/955989519256141894/1007187482330279966/baseline_mark_chat_unread_white_48dp.png?size=4096"
+    log = "log.pn",
+    userhider = "userhider.png"
 }
 
 util.Icons = Icons
@@ -116,7 +116,7 @@ util.UI = Mercury:Create({
     Name = "Utilities",
     Size = UDim2.fromOffset(600, 400),
     Theme = Mercury.Themes.Dark,
-    Link = "https://github.com/3xjn/Utilities",
+    Link = util.website,
     Url = "utilities",
     Icon = Icons.hammer,
     HideKeybind = Settings.ToggleKeybind
@@ -136,3 +136,4 @@ import("modules/antifling.lua")
 import("modules/antiafk.lua")
 import("modules/antikill.lua")
 import("modules/chatlogger.lua")
+import("modules/userhider.lua")

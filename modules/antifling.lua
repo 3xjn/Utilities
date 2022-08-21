@@ -20,7 +20,6 @@ pcall(function()
     PhysicsService:CollisionGroupSetCollidable("Players", "Friends", Settings.AntiFling.ignoreFriends)
 end)
 
-
 AntiFling:Toggle({
     Name = "AntiFling",
     StartingState = Settings.AntiFling.Enabled,
@@ -44,7 +43,9 @@ AntiFling:Toggle({
     Description = "Enable collisions with friends",
     Callback = function(state)
         Settings.AntiFling.ignoreFriends = state
-        PhysicsService:CollisionGroupSetCollidable("Players", "Friends", state)
+        pcall(function()
+            PhysicsService:CollisionGroupSetCollidable("Players", "Friends", state)
+        end)
 
         UI:Notification({
             Title = "Settings",

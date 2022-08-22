@@ -686,6 +686,8 @@ function Library:create(options)
 		TextXAlignment = Enum.TextXAlignment.Left
 	})
 
+    self.statusText = status
+
 	local homeButton = tabButtons:object("TextButton", {
 		Name = "hehehe siuuuuuuuuu",
 		BackgroundTransparency = 0,

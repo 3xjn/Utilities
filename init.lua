@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.0.1.0",
+    version = "1.1.1.0",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -134,6 +134,8 @@ function import(file)
         error(("<util> ~ Error importing %s: %s"):format(file, erorrmessage))
     end
 end
+
+util.UI:set_status("v" .. util.version)
 
 import("modules/animation.lua")
 import("modules/emotes.lua")

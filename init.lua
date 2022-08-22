@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.1.1.0",
+    version = "1.1.2.0",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"

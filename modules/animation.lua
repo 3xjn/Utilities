@@ -120,7 +120,7 @@ for _, v in pairs(paths) do
 
     local name = split[2]:gsub("^%l", string.upper)
     Animation:Dropdown({
-        Name = name,
+        Name = (name:match("Animation") and "Idle" .. name:sub(-1, -1)) or name,
         StartingText = selectedAnimations[v] or "Select...",
         Description = nil,
         Items = animationNames,

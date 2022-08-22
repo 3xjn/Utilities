@@ -15,7 +15,7 @@ local Emotes = UI:Tab({
     Icon = Icons.emotes
 })
 
-function update()
+function updateEmotes()
     writefile(Directory .. "/emotes.json", HttpService:JSONEncode(Settings.Emotes))
     
     local Character = LocalPlayer.Character
@@ -41,7 +41,7 @@ end
 Settings.Emotes = HttpService:JSONDecode(readfile(Directory .. "/emotes.json")) or {}
 
 if #Settings.Emotes > 0 then
-    update()
+    updateEmotes()
 
     UI:Notification({
         Title = "Loaded",
@@ -60,7 +60,7 @@ for i=1, 8 do
 
             if isDigit then
                 Settings.Emotes[i] = isDigit
-                update()
+                updateEmotes()
 
                 UI:Notification({
                     Title = "Updated",
@@ -120,5 +120,5 @@ Emotes:Slider({
     end
 })
 
-update()
-LocalPlayer.CharacterAdded:Connect(update)
+updateEmotes()
+LocalPlayer.CharacterAdded:Connect(updateEmotes)

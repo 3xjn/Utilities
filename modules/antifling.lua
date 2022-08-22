@@ -60,7 +60,7 @@ local function OnCharacterAdded(Character, isFriends)
     coroutine.resume(coroutine.create(function()
         Character:WaitForChild("HumanoidRootPart", 1/0)
         task.wait()
-        for i,v in pairs(Character:GetDescendants()) do
+        for _, v in pairs(Character:GetDescendants()) do
             if v:IsA("BasePart") then
                 if isFriends then
                     PhysicsService:SetPartCollisionGroup(v, "Friends")

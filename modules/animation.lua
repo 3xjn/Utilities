@@ -46,7 +46,7 @@ else
     selectedAnimations = {}
 end
 
-function update(firstLoad)
+function updateAnims()
     local Character = LocalPlayer.Character
 
     if not Character then
@@ -59,7 +59,7 @@ function update(firstLoad)
         return
     end
 
-    if Humanoid.RigType ~= Enum.HumanoidRigType.R15 then 
+    if Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
         return UI:Notification({
             Title = "Alert",
             Text = "Your character is not using the R15 rig.",
@@ -83,14 +83,13 @@ function update(firstLoad)
             local id = animations[item][index]
             local split = path:split(".")
 
-            --Animate[split[1]][split[2]].AnimationId = "rbxassetid://" .. id
-            local look = Animate:FindFirstChild(split[1])
-            if not look then continue end
+            local animGroup = Animate:FindFirstChild(split[1])
 
-            look = look:FindFirstChild(split[2])
-            if not look then continue end
+            if animGroup then
+                local anim = animGroup:FindFirstChild(split[2])
 
-            look.AnimationId = "rbxassetid://" .. id
+                anim.AnimationId = "rbxassetid://" .. id
+            end
         end
     end
 
@@ -106,7 +105,7 @@ end
 
 if count > 0 then
     if LocalPlayer.Character then
-        update(true)
+        updateAnims()
         UI:Notification({
             Title = "Loaded",
             Text = ("%u %s loaded"):format(count, pluralize(count, "animation", "animations")),
@@ -116,9 +115,7 @@ if count > 0 then
     end
 end
 
-LocalPlayer.CharacterAdded:Connect(update)
-
-for k, v in pairs(paths) do
+for _, v in pairs(paths) do
     local split = v:split(".")
 
     local name = split[2]:gsub("^%l", string.upper)
@@ -129,7 +126,7 @@ for k, v in pairs(paths) do
         Items = animationNames,
         Callback = function(item)
             selectedAnimations[v] = item
-            update()
+            updateAnims()
 
             UI:Notification({
                 Title = "Animation Updated",
@@ -140,3 +137,5 @@ for k, v in pairs(paths) do
         end
     })
 end
+
+LocalPlayer.CharacterAdded:Connect(updateAnims)

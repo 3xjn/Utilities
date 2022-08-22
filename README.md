@@ -27,3 +27,5 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/i
     * Prevent players from killing your character via tool kill and void kill
 * Chat Logger
     * Logs all chat messages to a file
+* User Hider
+    * Hide certain players from your game (deletes their character and chats)

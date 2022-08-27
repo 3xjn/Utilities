@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.1.2.0",
+    version = "1.1.3.0",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -116,7 +116,7 @@ util.UI = Mercury:Create({
     Name = "Utilities",
     Size = UDim2.fromOffset(600, 400),
     Theme = Mercury.Themes.Dark,
-    Link = "https://github.com/3xjn/Utilities",
+    Link = util.website,
     Url = "utilities",
     Icon = Icons.hammer,
     HideKeybind = Settings.ToggleKeybind

@@ -1,3 +1,4 @@
+local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -42,22 +43,38 @@ ACL:Toggle({
     end
 })
 
-local PostMessage = require(LocalPlayer:WaitForChild("PlayerScripts", 1/0):WaitForChild("ChatScript", 1/0):WaitForChild("ChatMain", 1/0)).MessagePosted
-getgenv().MessageEvent = Instance.new("BindableEvent")
+function acl()
+    local PostMessage = require(LocalPlayer:WaitForChild("PlayerScripts", 1/0):WaitForChild("ChatScript", 1/0):WaitForChild("ChatMain", 1/0)).MessagePosted
+    getgenv().MessageEvent = Instance.new("BindableEvent")
 
-local OldFunctionHook;
-local PostMessageHook = function(self, msg)
-    local aclSettings = Settings.ACL
-    if aclSettings.Enabled and not checkcaller() and self == PostMessage then
-        if aclSettings.allowEmotes and msg:sub(1, 3) == "/e " then
-            return OldFunctionHook(self, msg)
+    local OldFunctionHook;
+    local PostMessageHook = function(self, msg)
+        local aclSettings = Settings.ACL
+        if aclSettings.Enabled and not checkcaller() and self == PostMessage then
+            if aclSettings.allowEmotes and msg:sub(1, 3) == "/e " then
+                return OldFunctionHook(self, msg)
+            end
+            
+            return print("[ACL] " .. msg)
         end
-        
-        return print("[ACL] " .. msg)
+
+        return OldFunctionHook(self, msg)
     end
 
-    return OldFunctionHook(self, msg)
+    OldFunctionHook = hookfunction(PostMessage.fire, PostMessageHook)
+    getgenv().OldFunctionHook = OldFunctionHook
 end
 
-OldFunctionHook = hookfunction(PostMessage.fire, PostMessageHook)
-getgenv().OldFunctionHook = OldFunctionHook
+if not StarterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat) then
+    local coreGuiChangedConnection;
+    coreGuiChangedConnection = StarterGui.CoreGuiChangedSignal:Connect(function(coreGuiType, enabled)
+        if not coreGuiType == Enum.CoreGuiType.Chat and not enabled then return end
+
+        task.wait(2)
+        acl()
+
+        coreGuiChangedConnection:Disconnect()
+    end)
+else
+    acl()
+end

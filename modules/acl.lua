@@ -27,6 +27,17 @@ ACL:Toggle({
     end
 })
 
+local regexPatterns = {}
+Settings.ACL.regexPatterns = regexPatterns
+
+local emoteRegex = "^/e"
+
+if Settings.ACL.allowEmotes then
+    regexPatterns[#regexPatterns + 1] = emoteRegex
+end
+
+local removePattern;
+
 ACL:Toggle({
     Name = "Allow Emotes",
     StartingState = Settings.ACL.allowEmotes,
@@ -34,12 +45,59 @@ ACL:Toggle({
     Callback = function(state)
         Settings.ACL.allowEmotes = state
 
+        local index = table.find(regexPatterns, emoteRegex)
+
+        if state then
+            if not index then
+                regexPatterns[#regexPatterns + 1] = emoteRegex
+            end
+        else
+            if index then
+                table.remove(regexPatterns, index)
+            end
+        end
+
         UI:Notification({
             Title = "Settings",
             Text = "Allow emotes has been " .. (state and "enabled" or "disabled"),
             Duration = 3,
             Icon = Icons.chat
         })
+    end
+})
+
+ACL:Textbox({
+    Name = "Add Pattern",
+    Callback = function(pattern)
+        if pattern ~= "" and not table.find(regexPatterns, pattern) then
+            regexPatterns[#regexPatterns + 1] = pattern
+            removePattern:AddItems({
+                pattern
+            })
+
+            UI:Notification({
+                Title = "Settings",
+                Text = ("Added `%s` to regex list"):format(pattern),
+                Duration = 3,
+                Icon = Icons.chat
+            })
+        end
+    end
+})
+
+removePattern = ACL:Dropdown({
+    Name = "Remove Pattern",
+    StartingText = "Select...",
+    Items = {},
+    Callback = function(item)
+        local find = table.find(regexPatterns, item)
+
+        if find then
+            table.remove(regexPatterns, find)
+            removePattern:RemoveItems({
+                item
+            })
+        end
     end
 })
 
@@ -51,9 +109,12 @@ function acl()
     local PostMessageHook = function(self, msg)
         local aclSettings = Settings.ACL
         if aclSettings.Enabled and not checkcaller() and self == PostMessage then
-            if aclSettings.allowEmotes and msg:sub(1, 3) == "/e " then
-                return OldFunctionHook(self, msg)
+            for _, v in pairs(aclSettings.regexPatterns) do
+                if msg:match(v) then
+                    return OldFunctionHook(self, msg)
+                end
             end
+
             
             return print("[ACL] " .. msg)
         end

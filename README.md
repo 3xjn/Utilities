@@ -1,6 +1,6 @@
 ## Script
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/init.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/init.lua", false))()
 ```
 
 # Utilities

@@ -37,7 +37,7 @@ local Library = {
 			Secondary = Color3.fromHSV(240/360, 40/255, 63/255),
 			Tertiary = Color3.fromHSV(260/360, 60/255, 148/255),
 
-			StrongText = Color3.fromHSV(0, 0, 1),		
+			StrongText = Color3.fromHSV(0, 0, 1),
 			WeakText = Color3.fromHSV(0, 0, 172/255)
 		},
 		Serika = {
@@ -45,7 +45,7 @@ local Library = {
 			Secondary = Color3.fromRGB(80, 82, 85),
 			Tertiary = Color3.fromRGB(226, 183, 20),
 
-			StrongText = Color3.fromHSV(0, 0, 1),		
+			StrongText = Color3.fromHSV(0, 0, 1),
 			WeakText = Color3.fromHSV(0, 0, 172/255)
 		},
 		Dark = {
@@ -53,7 +53,7 @@ local Library = {
 			Secondary = Color3.fromRGB(50, 50, 55),
 			Tertiary = Color3.fromRGB(70, 130, 180),
 
-			StrongText = Color3.fromHSV(0, 0, 1),		
+			StrongText = Color3.fromHSV(0, 0, 1),
 			WeakText = Color3.fromHSV(0, 0, 172/255)
 		},
 		Rust = {
@@ -61,7 +61,7 @@ local Library = {
 			Secondary = Color3.fromRGB(65, 63, 63),
 			Tertiary = Color3.fromRGB(237, 94, 38),
 
-			StrongText = Color3.fromHSV(0, 0, 1),		
+			StrongText = Color3.fromHSV(0, 0, 1),
 			WeakText = Color3.fromHSV(0, 0, 172/255)
 		},
 		Aqua = {
@@ -69,7 +69,7 @@ local Library = {
 			Secondary = Color3.fromRGB(65, 63, 63),
 			Tertiary = Color3.fromRGB(51, 153, 137),
 
-			StrongText = Color3.fromHSV(0, 0, 1),        
+			StrongText = Color3.fromHSV(0, 0, 1),
 			WeakText = Color3.fromHSV(0, 0, 172/255)
 		},
 		Vaporwave = {},
@@ -168,7 +168,7 @@ function Library:object(class, properties)
 
 		local ti = TweenInfo.new(options.Length, options.Style, options.Direction)
 		options.Length = nil
-		options.Style = nil 
+		options.Style = nil
 		options.Direction = nil
 
 		local tween = TweenService:Create(localObject, ti, options); tween:Play()
@@ -235,7 +235,7 @@ function Library:object(class, properties)
 					self.fadeFrame.Visible = false
 				end)
 			end
-		end	
+		end
 	end
 
 	function methods:stroke(color, thickness, strokeMode)
@@ -322,7 +322,7 @@ function Library:object(class, properties)
 			if value then
 				localObject.AnchorPoint = Vector2.new(0.5, 0.5)
 				localObject.Position = UDim2.fromScale(0.5, 0.5)
-			end	
+			end
 		end,
 		Theme = function(value)
 			for property, obj in next, value do
@@ -380,7 +380,7 @@ function Library:show(state)
 		self.mainFrame:fade(not state, self.mainFrame.BackgroundColor3, 0.15)
         wait(0.25)
         tweening = false
-	else		
+	else
         tweening = true
 		self.mainFrame:fade(not state, self.mainFrame.BackgroundColor3, 0.15)
 		wait(0.1)
@@ -415,7 +415,7 @@ end
 		f = f or 15
 		return Color3.fromHSV(h, s, math.clamp(v + (f/255), 0, 1))
 	end
-	
+
 ]]
 
 local updateSettings = function() end
@@ -464,14 +464,13 @@ function Library:create(options)
 		Theme = self.Themes[settings.Theme],
 		Link = "https://github.com/deeeity/mercury-lib"
 	}, options)
-	
+
 	if getgenv and getgenv().MercuryUI then
 		getgenv():MercuryUI()
 		getgenv().MercuryUI = nil
 	end
 
-	
-	
+
 	if options.Link:sub(-1, -1) == "/" then
 		options.Link = options.Link:sub(1, -2)
 	end
@@ -503,7 +502,7 @@ function Library:create(options)
 		Size = UDim2.new(),
 		Theme = {BackgroundColor3 = "Main"},
 		Centered = true,
-		ClipsDescendants = true		
+		ClipsDescendants = true
 	}):round(10)
 
 	core:fade(true, nil, 0.2, true)
@@ -537,16 +536,16 @@ function Library:create(options)
 							else
 								core:tween{
 									Position = UDim2.fromOffset(Mouse.X - ObjectPosition.X + (core.Size.X.Offset * core.AnchorPoint.X), Mouse.Y - ObjectPosition.Y + (core.Size.Y.Offset * core.AnchorPoint.Y)),
-									Length = Library.DragSpeed	
+									Length = Library.DragSpeed
 								}
-							end	
+							end
 							--[[core.AbsoluteObject:TweenPosition(
-								UDim2.new(0, Mouse.X - ObjectPosition.X + (core.Size.X.Offset * core.AnchorPoint.X), 0, Mouse.Y - ObjectPosition.Y + (core.Size.Y.Offset * core.AnchorPoint.Y)),           
+								UDim2.new(0, Mouse.X - ObjectPosition.X + (core.Size.X.Offset * core.AnchorPoint.X), 0, Mouse.Y - ObjectPosition.Y + (core.Size.Y.Offset * core.AnchorPoint.Y)),
 								Enum.EasingDirection.In,
 								Enum.EasingStyle.Sine,
 								Library.DragSpeed,
 								true
-								
+
 								--
 								core:tween{
 								Position = UDim2.new(0, Mouse.X - ObjectPosition.X + (core.Size.X.Offset * core.AnchorPoint.X), 0, Mouse.Y - ObjectPosition.Y + (core.Size.Y.Offset * core.AnchorPoint.Y)),
@@ -605,15 +604,15 @@ function Library:create(options)
 	closeButton.MouseLeave:connect(function()
 		closeButton:tween{ImageColor3 = Library.CurrentTheme.StrongText}
 	end)
-	
+
 	local function closeUI()
         Library:show(false)
 	end
-	
+
 	if getgenv then
 		getgenv().MercuryUI = closeUI
 	end
-		
+
 	closeButton.MouseButton1Click:connect(function()
 		closeUI()
 	end)
@@ -837,7 +836,7 @@ function Library:create(options)
 		local desiredInterval = 1
 		local counter = 0
 		RunService.Heartbeat:Connect(function(step)
-			counter += step  
+			counter += step
 			if counter >= desiredInterval then
 				counter -= desiredInterval
 				--local date = tostring(os.date("%X"))
@@ -1215,7 +1214,7 @@ function Library:tab(options)
                 tabButton.Parent = self.navigation.AbsoluteObject
                 tabButton.Size = UDim2.new(0, 50, tabButton.Size.Y.Scale, tabButton.Size.Y.Offset)
                 tabButton.Visible = true
-                tabButton:fade(false, Library.CurrentTheme.Main, 0.1)	
+                tabButton:fade(false, Library.CurrentTheme.Main, 0.1)
                 tabButton:tween({Size = UDim2.new(0, 125, tabButton.Size.Y.Scale, tabButton.Size.Y.Offset), Length = 0.1})
             end
 
@@ -1290,7 +1289,7 @@ function Library:tab(options)
 			self.homePage.Visible = true
 			self.homeButton:tween{BackgroundTransparency = 0.15}
 			selectedTab = self.homeButton
-			Library.UrlLabel.Text = Library.Url .. "/home"	
+			Library.UrlLabel.Text = Library.Url .. "/home"
 		elseif tabButton == lastTab[2] then
 			lastTab = visible[#visible-1]
 			tab.Visible = false
@@ -1557,7 +1556,7 @@ function Library:dropdown(options)
 			TextSize = 14
 		}):round(5)
 
-		items[i] = {{label, value}, newItem} 
+		items[i] = {{label, value}, newItem}
 
 		do
 			local hovered = false
@@ -1745,7 +1744,7 @@ function Library:dropdown(options)
 					selectedText:tween{Size = UDim2.fromOffset(selectedText.TextBounds.X + 20, 20), Length = 0.05}
 					options.Callback(value)
 				end)
-			end		
+			end
 		end
 
 		Library._resize_tab({

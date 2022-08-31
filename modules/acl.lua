@@ -5,6 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 local UI = util.UI
 local Icons = util.Icons
 local Settings = util.Settings
+local saveSettings = util.saveSettings
 
 local ACL = UI:Tab({
     Name = "Anti Chat Logger",
@@ -27,12 +28,16 @@ ACL:Toggle({
     end
 })
 
-local regexPatterns = {}
-Settings.ACL.regexPatterns = regexPatterns
+local regexPatterns = Settings.ACL.regexPatterns
+
+if not regexPatterns then
+    Settings.ACL.regexPatterns = {}
+    saveSettings()
+end
 
 local emoteRegex = "^/e"
 
-if Settings.ACL.allowEmotes then
+if Settings.ACL.allowEmotes and not table.find(regexPatterns, emoteRegex) then
     regexPatterns[#regexPatterns + 1] = emoteRegex
 end
 
@@ -81,6 +86,8 @@ ACL:Textbox({
                 Duration = 3,
                 Icon = Icons.chat
             })
+
+            saveSettings()
         end
     end
 })
@@ -88,15 +95,24 @@ ACL:Textbox({
 removePattern = ACL:Dropdown({
     Name = "Remove Pattern",
     StartingText = "Select...",
-    Items = {},
-    Callback = function(item)
-        local find = table.find(regexPatterns, item)
+    Items = regexPatterns,
+    Callback = function(pattern)
+        local find = table.find(regexPatterns, pattern)
 
         if find then
             table.remove(regexPatterns, find)
             removePattern:RemoveItems({
-                item
+                pattern
             })
+
+            UI:Notification({
+                Title = "Settings",
+                Text = ("Removed `%s` from regex list"):format(pattern),
+                Duration = 3,
+                Icon = Icons.chat
+            })
+
+            saveSettings()
         end
     end
 })

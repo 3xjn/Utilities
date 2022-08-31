@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.2.3.0",
+    version = "1.3.3.0",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -65,6 +65,7 @@ local templateSettings = {
     ACL = {
         Enabled = true,
         allowEmotes = true,
+        regexPatterns = {}
     },
     AntiFling = {
         Enabled = false,
@@ -108,6 +109,11 @@ if Keybind[1] == "Enum" then
 end
 
 util.Settings = Settings
+
+function util.saveSettings()
+    writefile(Directory .. "/settings.json", HttpService:JSONEncode(Settings))
+end
+
 util.pluralize = function(number, singular, plural)
     return number == 1 and singular or plural
 end

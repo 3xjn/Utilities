@@ -97,8 +97,8 @@ local Library = {
 	ToggleKey = Enum.KeyCode.Home,
 	UrlLabel = nil,
 	Url = nil,
-    Fork = "3xjn"
-
+    Fork = "3xjn",
+    BackgroundImage = nil
 }
 Library.__index = Library
 
@@ -153,6 +153,10 @@ function Library:object(class, properties)
 			localObject[property] = value
 		end)
 	end
+
+    if Library.BackgroundImage and class == "TextButton" then
+        localObject.BackgroundTransparency = 0.5
+    end
 
 	local methods = {}
 
@@ -441,6 +445,7 @@ function Library:create(options)
 		end
 		settings = HTTPService:JSONDecode(readfile("MercurySettings.json"))
 		Library.CurrentTheme = Library.Themes[settings.Theme]
+        Library.BackgroundImage = settings.BackgroundImage
 
         local toggleKey = settings.ToggleKey
 
@@ -503,12 +508,17 @@ function Library:create(options)
 		VerticalAlignment = Enum.VerticalAlignment.Bottom
 	})
 
-	local core = gui:object("Frame", {
+	local core = gui:object(self.BackgroundImage and "ImageLabel" or "Frame", {
 		Size = UDim2.new(),
 		Theme = {BackgroundColor3 = "Main"},
 		Centered = true,
 		ClipsDescendants = true		
 	}):round(10)
+
+    if self.BackgroundImage then
+        writefile("MercuryBackground.png", game:HttpGet(self.BackgroundImage))
+        core.Image = getsynasset("MercuryBackground.png")
+    end
 
 	core:fade(true, nil, 0.2, true)
 
@@ -625,7 +635,8 @@ function Library:create(options)
 	local urlBar = core:object("Frame", {
 		Size = UDim2.new(1, -10, 0, 25),
 		Position = UDim2.new(0, 5,0, 35),
-		Theme = {BackgroundColor3 = "Secondary"}
+		Theme = {BackgroundColor3 = "Secondary"},
+        BackgroundTransparency = self.BackgroundImage and 0.5 or 1
 	}):round(5)
 
 	local searchIcon = urlBar:object("ImageLabel", {
@@ -675,6 +686,7 @@ function Library:create(options)
 		Theme = {BackgroundColor3 = {"Secondary", -10}},
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -20),
+        BackgroundTransparency = self.BackgroundImage and 1 or 0,
 		Size = UDim2.new(1, -10, 1, -86)
 	}):round(7) -- Sept
 
@@ -694,7 +706,7 @@ function Library:create(options)
 
 	local homeButton = tabButtons:object("TextButton", {
 		Name = "hehehe siuuuuuuuuu",
-		BackgroundTransparency = 0,
+		BackgroundTransparency = self.BackgroundImage and 0.5 or 0,
 		Theme = {BackgroundColor3 = "Secondary"},
 		Size = UDim2.new(0, 125, 0, 25)
 	}):round(5)
@@ -788,7 +800,8 @@ function Library:create(options)
 	local profile = homePage:object("Frame", {
 		AnchorPoint = Vector2.new(0, .5),
 		Theme = {BackgroundColor3 = "Secondary"},
-		Size = UDim2.new(1, -20, 0, 100)
+		Size = UDim2.new(1, -20, 0, 100),
+        BackgroundTransparency = self.BackgroundImage and 0.5 or 0
 	}):round(7)
 
 	local profilePictureContainer = profile:object("ImageLabel", {
@@ -941,6 +954,15 @@ function Library:create(options)
 			Library.DragSpeed = (20 - value)/100
 		end,
 	}
+
+    settingsTab:textbox{
+        Name = "Background Image Url",
+        Description = "Only works on restart",
+        Callback = function(url)
+            self.BackgroundImage = url
+            updateSettings("BackgroundImage",  url)
+        end
+    }
 
     settingsTab:button{
         Name = "Destroy UI",
@@ -3279,8 +3301,9 @@ function Library:slider(options)
 		sliderContainer.Size = UDim2.new(1, -20, 0, 76)
 	end
 
-	local valueText = sliderContainer:object("TextLabel", {
+	local valueText = sliderContainer:object("TextBox", {
 		AnchorPoint = Vector2.new(1, 0),
+        ClearTextOnFocus = true,
 
 		Theme = {
 			BackgroundColor3 = {"Secondary", -20},
@@ -3313,6 +3336,23 @@ function Library:slider(options)
 		Size = UDim2.fromOffset(14, 14),
 		Theme = {BackgroundColor3 = {"Tertiary", 20}}
 	}):round(100)
+
+    local lastValue = options.Default
+    local methods = {}
+
+    valueText.InputEnded:Connect(function()
+        local value = tonumber(valueText.Text)
+
+        if value then
+            methods:Set(value)
+            sliderLine:tween{
+                Length = 0.06,
+                Size = UDim2.fromScale(((value - options.Min) / (options.Max - options.Min)), 1)
+            }
+        else
+            valueText.Text = lastValue
+        end
+    end)
 
 	do
 		local hovered = false
@@ -3353,13 +3393,12 @@ function Library:slider(options)
 					Length = 0.06,
 					Size = UDim2.fromScale(percentage, 1)
 				}
+                lastValue = value
 				options.Callback(value)
 			end
 		end)
 	end
 	self:_resize_tab()
-
-    local methods = {}
 
 	function methods:Set(value)
 		sliderLine:tween{Size = UDim2.fromScale(((value - options.Min) / (options.Max - options.Min)), 1)}
@@ -3378,6 +3417,7 @@ function Library:textbox(options)
 
 	local textboxContainer = self.container:object("TextButton", {
 		Theme = {BackgroundColor3 = "Secondary"},
+        BackgroundTransparency = self.BackgroundImage and 0.5 or 1,
 		Size = UDim2.new(1, -20, 0, 52)
 	}):round(7)
 

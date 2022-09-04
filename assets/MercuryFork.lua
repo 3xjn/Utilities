@@ -516,8 +516,17 @@ function Library:create(options)
 	}):round(10)
 
     if self.BackgroundImage then
-        writefile("MercuryBackground.png", game:HttpGet(self.BackgroundImage))
-        core.Image = getsynasset("MercuryBackground.png")
+        local success = pcall(function()
+            writefile("MercuryBackground.png", syn.request({
+                Url = self.BackgroundImage,
+                Method = "GET"
+            }).Body)
+            core.Image = getsynasset("MercuryBackground.png")
+        end)
+
+        if not success then
+            self.BackgroundImage = nil
+        end
     end
 
 	core:fade(true, nil, 0.2, true)

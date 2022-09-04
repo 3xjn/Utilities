@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.3.3.0",
+    version = "1.4.4.0",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -41,6 +41,7 @@ local Icons = {
     block = github .. "block.png",
     log = github .. "log.png",
     userhider = github .. "userhider.png",
+    error = github .. "error.png"
 }
 
 util.Icons = Icons
@@ -121,15 +122,15 @@ end
 util.UI = Mercury:Create({
     Name = "Utilities",
     Size = UDim2.fromOffset(600, 400),
-    Theme = Mercury.Themes.Dark,
     Link = util.website,
     Url = "utilities",
     Icon = Icons.hammer,
-    HideKeybind = Settings.ToggleKeybind
+    HideKeybind = Settings.ToggleKeybind,
+    Status = "v" .. util.version
 })
 
 function import(file)
-    local success, erorrmessage = pcall(function()
+    local success, errormessage = pcall(function()
         return loadstring(syn.request({
             Url = "https://raw.githubusercontent.com/3xjn/utilities/main/" .. file,
             Method = "GET"
@@ -137,11 +138,14 @@ function import(file)
     end)
 
     if not success then
-        error(("<util> ~ Error importing %s: %s"):format(file, erorrmessage))
+        util.UI:Notification({
+            Title = "Error",
+            Text = ("Error importing module '%s' (%s)"):format(file, errormessage),
+            Duration = 10,
+            Icon = Icons.error
+        })
     end
 end
-
-util.UI:set_status("v" .. util.version)
 
 import("modules/animation.lua")
 import("modules/emotes.lua")

@@ -516,17 +516,7 @@ function Library:create(options)
 	}):round(10)
 
     if self.BackgroundImage then
-        local success = pcall(function()
-            writefile("MercuryBackground.png", syn.request({
-                Url = self.BackgroundImage,
-                Method = "GET"
-            }).Body)
-            core.Image = getsynasset("MercuryBackground.png")
-        end)
-
-        if not success then
-            self.BackgroundImage = nil
-        end
+        core.Image = getsynasset(self.BackgroundImage)
     end
 
 	core:fade(true, nil, 0.2, true)
@@ -965,11 +955,11 @@ function Library:create(options)
 	}
 
     settingsTab:textbox{
-        Name = "Background Image Url",
-        Description = "Only works on restart",
-        Callback = function(url)
-            self.BackgroundImage = url
-            updateSettings("BackgroundImage",  url)
+        Name = "Background File Name",
+        Description = "Only works on restart (must be .png or .jpg)",
+        Callback = function(file)
+            self.BackgroundImage = file
+            updateSettings("BackgroundImage",  file)
         end
     }
 

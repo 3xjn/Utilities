@@ -444,7 +444,7 @@ function Library:create(options)
 			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
 		end
 		settings = HTTPService:JSONDecode(readfile("MercurySettings.json"))
-		Library.CurrentTheme = Library.Themes[settings.Theme]
+		Library.CurrentTheme = Library.Themes[settings.Theme] or Library.Themes.Legacy
         Library.BackgroundImage = settings.BackgroundImage
 
         local toggleKey = settings.ToggleKey
@@ -467,7 +467,7 @@ function Library:create(options)
 	options = self:set_defaults({
 		Name = "Mercury",
 		Size = UDim2.fromOffset(600, 400),
-		Theme = self.CurrentTheme or self.Themes[settings.Theme] or self.Themes.Legacy,
+		Theme = self.CurrentTheme or self.Themes[settings.Theme],
 		Link = "https://github.com/deeeity/mercury-lib"
 	}, options)
 

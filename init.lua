@@ -58,7 +58,8 @@ for k, v in pairs(Icons) do
     Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
 end
 
-local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/assets/MercuryFork.lua"))()
+--local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/assets/MercuryFork.lua"))()
+local Mercury = loadfile("MercuryFork.lua")()
 
 local templateSettings = {
     Animation = {},

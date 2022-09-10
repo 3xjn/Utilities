@@ -467,7 +467,7 @@ function Library:create(options)
 	options = self:set_defaults({
 		Name = "Mercury",
 		Size = UDim2.fromOffset(600, 400),
-		Theme = self.CurrentTheme or self.Themes[settings.Theme],
+		Theme = self.CurrentTheme or self.Themes[settings.Theme] or self.Themes.Legacy,
 		Link = "https://github.com/deeeity/mercury-lib"
 	}, options)
 

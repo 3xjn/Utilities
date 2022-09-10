@@ -3,13 +3,14 @@ if not game:IsLoaded() then
 end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
-local util = {
+environment.util = {
     version = "1.4.5.1",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
 }
-environment.util = util
+
+local util = environment.util
 
 local HttpService = game:GetService("HttpService")
 
@@ -58,8 +59,7 @@ for k, v in pairs(Icons) do
     Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
 end
 
---local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/assets/MercuryFork.lua"))()
-local Mercury = loadfile("MercuryFork.lua")()
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/assets/MercuryFork.lua"))()
 
 local templateSettings = {
     Animation = {},

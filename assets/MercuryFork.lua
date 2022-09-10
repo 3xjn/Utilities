@@ -3416,7 +3416,7 @@ function Library:textbox(options)
 
 	local textboxContainer = self.container:object("TextButton", {
 		Theme = {BackgroundColor3 = "Secondary"},
-        BackgroundTransparency = self.BackgroundImage and 0.5 or 1,
+        BackgroundTransparency = self.BackgroundImage and 0.5 or 0,
 		Size = UDim2.new(1, -20, 0, 52)
 	}):round(7)
 

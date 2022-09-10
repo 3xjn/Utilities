@@ -485,7 +485,7 @@ function Library:create(options)
 		options.Link = options.Link:sub(1, -2)
 	end
 
-	if options.Theme.Light then
+	if options.Theme and options.Theme.Light then
 		self.darken, self.lighten = self.lighten, self.darken
 	end
 

@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 local util = {
-    version = "1.4.4.1",
+    version = "1.4.5.1",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -129,7 +129,9 @@ util.UI = Mercury:Create({
     Status = "v" .. util.version
 })
 
-function import(file)
+function import(file, placeId)
+    if placeId and game.PlaceId ~= placeId then return end
+
     local success, errormessage = pcall(function()
         return loadstring(syn.request({
             Url = "https://raw.githubusercontent.com/3xjn/utilities/main/" .. file,

@@ -1,3 +1,7 @@
+if game.PlaceId == 1962086868 then
+    return
+end
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -56,11 +60,12 @@ AntiFling:Toggle({
     end
 })
 
-local function OnCharacterAdded(Character, isFriends)
+function OnCharacterAdded(Character, isFriends)
     coroutine.resume(coroutine.create(function()
         Character:WaitForChild("HumanoidRootPart", 1/0)
         task.wait()
-        for _, v in pairs(Character:GetDescendants()) do
+
+        local function partCheck(v)
             if v:IsA("BasePart") then
                 if isFriends then
                     PhysicsService:SetPartCollisionGroup(v, "Friends")
@@ -69,6 +74,12 @@ local function OnCharacterAdded(Character, isFriends)
                 end
             end
         end
+
+        for _, v in pairs(Character:GetDescendants()) do
+            partCheck(v)
+        end
+
+        Character.DescendantAdded:Connect(partCheck)
     end))
 end
 

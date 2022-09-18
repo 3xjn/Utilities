@@ -975,6 +975,7 @@ function Library:create(options)
     settingsTab:textbox{
         Name = "Background File",
         Description = "Changes apply on restart (.png, .jpg, .webm)",
+        Text = self.BackgroundImage or "",
         Callback = function(file)
             self.BackgroundImage = file
             updateSettings("BackgroundImage",  file)
@@ -3428,7 +3429,8 @@ end
 function Library:textbox(options)
 	options = self:set_defaults({
 		Name = "Text Box",
-		Placeholder = "Type something..",
+		--Placeholder = "Type something..",
+        Text = "",
 		Description = nil,
 		Callback = function(t) end
 	}, options)
@@ -3472,6 +3474,7 @@ function Library:textbox(options)
 		Size = UDim2.new(0, 50,0, 20),
 		TextSize = 12,
 		PlaceholderText = options.Placeholder,
+        Text = options.Text,
 		ClipsDescendants = true
 	}):round(5):stroke("Tertiary")
 

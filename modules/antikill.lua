@@ -58,6 +58,8 @@ end)
 local LocalPlayer = Players.LocalPlayer
 
 function antivoid(character)
+    if not character then return end
+
     character.ChildAdded:Connect(function(child)
         if not Settings.AntiKill.AntiVoid then return end
         task.wait()

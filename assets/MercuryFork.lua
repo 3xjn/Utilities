@@ -508,7 +508,19 @@ function Library:create(options)
 		VerticalAlignment = Enum.VerticalAlignment.Bottom
 	})
 
-	local core = gui:object(self.BackgroundImage and "ImageLabel" or "Frame", {
+    local class = "Frame"
+
+    if self.BackgroundImage then
+        local ext = self.BackgroundImage:split(".")[2]
+        
+        if ext == "png" or ext == "jpg" or ext == "jpeg" then
+            class = "ImageLabel"
+        elseif ext == "webm" then
+            class = "VideoFrame"
+        end
+    end
+
+	local core = gui:object(class, {
 		Size = UDim2.new(),
 		Theme = {BackgroundColor3 = "Main"},
 		Centered = true,
@@ -516,7 +528,13 @@ function Library:create(options)
 	}):round(10)
 
     if self.BackgroundImage then
-        core.Image = getsynasset(self.BackgroundImage)
+        if class == "ImageLabel" then
+            core.Image = getsynasset(self.BackgroundImage)
+        elseif class == "VideoFrame" then
+            core.Looped = true
+            core.Video = getsynasset(self.BackgroundImage)
+            core.AbsoluteObject:Play()
+        end
     end
 
 	core:fade(true, nil, 0.2, true)
@@ -955,8 +973,8 @@ function Library:create(options)
 	}
 
     settingsTab:textbox{
-        Name = "Background File Name",
-        Description = "Only works on restart (must be .png or .jpg)",
+        Name = "Background File",
+        Description = "Changes apply on restart (.png, .jpg, .webm)",
         Callback = function(file)
             self.BackgroundImage = file
             updateSettings("BackgroundImage",  file)

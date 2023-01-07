@@ -98,7 +98,8 @@ local Library = {
 	UrlLabel = nil,
 	Url = nil,
     Fork = "3xjn",
-    BackgroundImage = nil
+    BackgroundImage = nil,
+    OldDeathSound = false
 }
 Library.__index = Library
 
@@ -474,9 +475,9 @@ function Library:create(options)
     -- too lazy to figure out why set_defaults breaks on Status
     self.Status = options.Status or self.Status
 	
-	if getgenv and getgenv().MercuryUI then
-		getgenv():MercuryUI()
-		getgenv().MercuryUI = nil
+	if getgenv and getgenv().MercuryForkUi then
+		getgenv():MercuryForkUi()
+		getgenv().MercuryForkUi = nil
 	end
 
 	
@@ -642,7 +643,7 @@ function Library:create(options)
 	end
 	
 	if getgenv then
-		getgenv().MercuryUI = closeUI
+		getgenv().MercuryForkUi = closeUI
 	end
 		
 	closeButton.MouseButton1Click:connect(function()
@@ -981,6 +982,33 @@ function Library:create(options)
             updateSettings("BackgroundImage",  file)
         end
     }
+
+    local oof = syn.request({
+        Url = "https://cdn.discordapp.com/attachments/1035690925705400460/1041484878430081165/ouch.ogg",
+        Method = "GET"
+    }).Body
+
+    writefile("ouch.ogg", oof)
+
+    settingsTab:toggle{
+        Name = "Return old death sound",
+        Description = "Reverts the death sound to the old one.",
+        StartingState = self.OldDeathSound,
+        Callback = function(state)
+            self.OldDeathSound = state
+            updateSettings("OldDeathSound", state)
+        end
+    }
+
+    local oldnc;
+    oldnc = hookmetamethod(game, "__newindex", newcclosure(function(self, k, v)
+        if self:IsA("Sound") and k == "SoundId" and v == "rbxasset://sounds/uuhhh.mp3" and self.OldDeathSound then
+            v = getsynasset("ouch.ogg")
+            return
+        end
+        
+        return oldnc(self, k, v)
+    end))
 
     settingsTab:button{
         Name = "Destroy UI",

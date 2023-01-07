@@ -4,7 +4,7 @@ end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
 environment.util = {
-    version = "1.6.7.1",
+    version = "1.6.7.2",
     author = "3xjn",
     description = "A collection of useful utilities for Roblox.",
     website = "https://github.com/3xjn/utilities"
@@ -50,6 +50,11 @@ util.Icons = Icons
 -- Convert online assets to useable assets
 
 for k, v in pairs(Icons) do
+    if isfile(Directory .. "/" .. k .. ".png") then
+        Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
+        continue
+    end
+
     local req = syn.request({
         Url = v,
         Method = "GET"
@@ -86,6 +91,20 @@ local templateSettings = {
     NameHighlight = {
         Enabled = false
     },
+    InteractionESP = {
+        Colors = {
+            ProximityPrompt = {255, 255, 255},
+            TouchTransmitter = {255, 255, 255},
+            ClickDetector = {255, 255, 255},
+            Tool = {255, 255, 255}
+        },
+        Enabled = {
+            ProximityPrompt = true,
+            TouchTransmitter = true,
+            ClickDetector = true,
+            Tool = true
+        }
+    },
     Speed = 1,
     ToggleKeybind = "Enum.KeyCode.RightAlt"
 }
@@ -103,6 +122,12 @@ for k, v in pairs(templateSettings) do
     end
 end
 
+function util.saveSettings()
+    writefile(Directory .. "/settings.json", HttpService:JSONEncode(Settings))
+end
+
+util.saveSettings()
+
 -- Parse Toggle Keybind
 local Keybind = Settings.ToggleKeybind:split(".")
 
@@ -112,9 +137,6 @@ end
 
 util.Settings = Settings
 
-function util.saveSettings()
-    writefile(Directory .. "/settings.json", HttpService:JSONEncode(Settings))
-end
 
 util.pluralize = function(number, singular, plural)
     return number == 1 and singular or plural
@@ -150,10 +172,11 @@ function import(file, placeId)
     end
 end
 
+task.wait(2)
+
 import("modules/animation.lua")
 import("modules/emotes.lua")
 import("modules/acl.lua")
-import("modules/antifling.lua")
 import("modules/antiafk.lua")
 import("modules/antikill.lua")
 import("modules/chatlogger.lua")

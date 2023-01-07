@@ -131,7 +131,6 @@ function acl()
                 end
             end
 
-            
             return print("[ACL] " .. msg)
         end
 

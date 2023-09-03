@@ -3,6 +3,8 @@ if not game:IsLoaded() then
 end
 
 local environment = assert(getgenv, "<util> ~ Your exploit is not supported")()
+local request = syn.request or http_request or request or (http and http.request) or (http_request and http_request.request)
+
 environment.util = {
     version = "1.6.7.2",
     author = "3xjn",
@@ -51,17 +53,17 @@ util.Icons = Icons
 
 for k, v in pairs(Icons) do
     if isfile(Directory .. "/" .. k .. ".png") then
-        Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
+        Icons[k] = getcustomasset(Directory .. "/" .. k .. ".png")
         continue
     end
 
-    local req = syn.request({
+    local req = request({
         Url = v,
         Method = "GET"
     })
 
     writefile(Directory .. "/" .. k .. ".png", req.Body)
-    Icons[k] = getsynasset(Directory .. "/" .. k .. ".png")
+    Icons[k] = getcustomasset(Directory .. "/" .. k .. ".png")
 end
 
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/3xjn/utilities/main/assets/MercuryFork.lua"))()
@@ -156,7 +158,7 @@ function import(file, placeId)
     if placeId and game.PlaceId ~= placeId then return end
 
     local success, errormessage = pcall(function()
-        return loadstring(syn.request({
+        return loadstring(request({
             Url = "https://raw.githubusercontent.com/3xjn/utilities/main/" .. file,
             Method = "GET"
         }).Body)()

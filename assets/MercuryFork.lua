@@ -30,6 +30,9 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HTTPService = game:GetService("HttpService")
 
+local getcustomasset = getsynasset or getcustomasset
+local request = (syn and syn.request) or http_request or request or (http and http.request) or (http_request and http_request.request)
+
 local Library = {
 	Themes = {
 		Legacy = {
@@ -530,10 +533,10 @@ function Library:create(options)
 
     if self.BackgroundImage then
         if class == "ImageLabel" then
-            core.Image = getsynasset(self.BackgroundImage)
+            core.Image = getcustomasset(self.BackgroundImage)
         elseif class == "VideoFrame" then
             core.Looped = true
-            core.Video = getsynasset(self.BackgroundImage)
+            core.Video = getcustomasset(self.BackgroundImage)
             core.AbsoluteObject:Play()
         end
     end
@@ -983,7 +986,7 @@ function Library:create(options)
         end
     }
 
-    local oof = syn.request({
+    local oof = request({
         Url = "https://cdn.discordapp.com/attachments/1035690925705400460/1041484878430081165/ouch.ogg",
         Method = "GET"
     }).Body
@@ -1003,7 +1006,7 @@ function Library:create(options)
     local oldnc;
     oldnc = hookmetamethod(game, "__newindex", newcclosure(function(self, k, v)
         if self:IsA("Sound") and k == "SoundId" and v == "rbxasset://sounds/uuhhh.mp3" and self.OldDeathSound then
-            v = getsynasset("ouch.ogg")
+            v = getcustomasset("ouch.ogg")
             return
         end
         

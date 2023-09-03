@@ -1,6 +1,8 @@
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 
+local request = (syn and syn.request) or http_request or request or (http and http.request) or (http_request and http_request.request)
+
 local UI = util.UI
 local Icons = util.Icons
 local Directory = util.Directory
@@ -12,7 +14,7 @@ local Animation = UI:Tab({
     Icon = Icons.animation
 })
 
-local animations = syn.request({
+local animations = request({
     Url = "https://raw.githubusercontent.com/3xjn/utilities/main/assets/animations.json",
     Method = "GET"
 }).Body
@@ -117,8 +119,8 @@ end
 
 for _, v in pairs(paths) do
     local split = v:split(".")
-
     local name = split[2]:gsub("^%l", string.upper)
+
     Animation:Dropdown({
         Name = (name:match("Animation") and "Idle" .. name:sub(-1, -1)) or name,
         StartingText = selectedAnimations[v] or "Select...",
